@@ -1,0 +1,8 @@
+id,type,min_duration,dbs_required
+1,GRO,60,False
+2,PHA,30,True
+3,DOG,30,False
+4,HOS,90,True
+5,CHAT,30,False
+6,ANY,30,False
+
