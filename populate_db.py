@@ -55,7 +55,19 @@ def populate(engine):
 
 
 if __name__ == "__main__":
-    engine = create_engine('sqlite:///db.sqlite3')
-    if len(sys.argv) > 1 and sys.argv[1] == "-d":
+    to_clear_db = False
+    db_path = 'db.sqlite3'
+
+    # parse arguments
+    if len(sys.argv) > 1:
+        args_to_parse = sys.argv[1:]
+        if "-d" in args_to_parse:
+            args_to_parse.remove("-d")
+            to_clear_db = True
+        if args_to_parse:
+            db_path = args_to_parse[0]
+
+    engine = create_engine(r'sqlite:///' + db_path)
+    if to_clear_db:
         clear_tables(engine)
     sys.exit(populate(engine))
