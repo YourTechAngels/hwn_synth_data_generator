@@ -1,24 +1,61 @@
-from sqlalchemy import create_engine
+import sys
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.automap import automap_base
 import pandas as pd
-# import clear_tables
 
-engine = create_engine('sqlite:///db.sqlite3')
 
-df_task_types = pd.read_csv('generated/task_types.csv')
-df_task_types.index += 1
-df_task_types.to_sql(name='tasks_tasktype', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+def clear_tables(engine):
+    metadata = MetaData(engine)
+    Base = automap_base()
+    Base.prepare(engine, reflect=True)
+    User = Base.classes.accounts_user
+    Task = Base.classes.tasks_task
+    TaskType = Base.classes.tasks_tasktype
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-df_tasks = pd.read_csv('generated/tasks.csv')
-df_tasks.index += 1
-df_tasks.to_sql(name='tasks_task', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+    print("Number of records in User table: ", session.query(User).count())
+    print("Number of records in Task table: ", session.query(Task).count())
+    print("Number of records in TaskType table: ", session.query(TaskType).count())
+    print("---------------------------------")
+    # print(session.query(User).all())
+    session.query(Task).delete()
+    session.query(TaskType).delete()
+    session.query(User).delete()
+    session.commit()
+    print("Number of records in User table: ", session.query(User).count())
+    print("Number of records in Task table: ", session.query(Task).count())
+    print("Number of records in TaskType table: ", session.query(TaskType).count())
+    print("---------------------------------")
 
-df_users = pd.read_csv('generated/users.csv')
-df_users.index += 1
-df_users.to_sql(name='accounts_user', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
 
-df_saved_users = pd.read_csv('generated/saved_users.csv')
-df_saved_users.index += len(df_users) + 1
-not_null_char_cols = "password,first_name,last_name,username,email,phone_number,post_code,address_line_1,address_line_2,city,county".split(",")
-df_saved_users[not_null_char_cols] = df_saved_users[not_null_char_cols].fillna("")
-df_saved_users.to_sql(name='accounts_user', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+def populate(engine):
+    df_task_types = pd.read_csv('generated/task_types.csv')
+    df_task_types.index += 1
+    df_task_types.to_sql(name='tasks_tasktype', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+    print(f'{len(df_task_types)} task_type entries have been inserted')
 
+    df_tasks = pd.read_csv('generated/tasks.csv')
+    df_tasks.index += 1
+    df_tasks.to_sql(name='tasks_task', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+    print(f'{len(df_tasks)} task entries have been inserted')
+
+    df_users = pd.read_csv('generated/users.csv')
+    df_users.index += 1
+    df_users.to_sql(name='accounts_user', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+    print(f'{len(df_users)} user entries have been inserted')
+
+    df_saved_users = pd.read_csv('generated/saved_users.csv')
+    df_saved_users.index += len(df_users) + 1
+    not_null_char_cols = "password,first_name,last_name,username,email,phone_number,post_code,address_line_1,address_line_2,city,county".split(",")
+    df_saved_users[not_null_char_cols] = df_saved_users[not_null_char_cols].fillna("")
+    df_saved_users.to_sql(name='accounts_user', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+    print(f'{len(df_saved_users)} saved user entries have been inserted')
+
+
+if __name__ == "__main__":
+    engine = create_engine('sqlite:///db.sqlite3')
+    if len(sys.argv) > 1 and sys.argv[1] == "-d":
+        clear_tables(engine)
+    sys.exit(populate(engine))
