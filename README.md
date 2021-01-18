@@ -1,9 +1,9 @@
 ### Description
 The aim of this project is to facilitate fake data generation for HelpWhoNeeds project.
 
-###Prerequisite
+### Prerequisite  
 SQLite DB with the project schema should be created.
-By default script root db file 'db.sqlite3' will be used
+By default file 'db.sqlite3' in this project root folder will be used
 
 ### Usage
 1. Create venv
@@ -23,6 +23,6 @@ rename `saved_users_template.csv` into `saved_users.csv` and insert your users d
          _Unix/Mac_: `/absolute/path/to/foo.db`
          _Windows_: `C:\path\to\foo.db`
 
-####Notes
+#### Notes  
 Data from https://namecensus.com as a source of names and surnames.
 Probably, later Faker package will be used with this goal 
