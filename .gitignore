@@ -1,0 +1,5 @@
+venv
+generated/saved_users.csv
+db.sqlite3
+.idea
+__pycache__
