@@ -14,7 +14,7 @@ By default file 'db.sqlite3' in this project root folder will be used
 rename `saved_users_template.csv` into `saved_users.csv` and insert your users data accordingly to the template.
    More than 1 user can be added.
 6. To insert data run 
-   ```python populate_data.py [-d] [db_path]```
+   ```python populate_db.py [-d] [db_path]```
    
     Options:
     * **-d** use this option if your DB is not empty 
