@@ -1,0 +1,2 @@
+password,last_login,is_superuser,first_name,last_name,is_staff,is_active,date_joined,uid,username,email,date_of_birth,phone_number,post_code,address_line_1,address_line_2,city,county,is_volunteer,dbs
+{psw},,{is_superuser},{first_name},{last_name},{is_staff},1,2021-01-18 11:28:08,{uid},{username},{email},{date_of_birth},{phone_number},{post_code},{address_line_1},{address_line_2},{city},{county},{is_volunteer},false
