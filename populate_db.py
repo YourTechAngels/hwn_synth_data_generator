@@ -42,6 +42,9 @@ def populate(engine):
     print(f'{len(df_tasks)} task entries have been inserted')
 
     df_users = pd.read_csv('generated/users.csv')
+    not_null_char_cols = "password,first_name,last_name,username,email,phone_number,post_code,address_line_1,address_line_2,city,county".split(
+        ",")
+    df_users[not_null_char_cols] = df_users[not_null_char_cols].fillna("")
     df_users.index += 1
     df_users.to_sql(name='accounts_user', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
     print(f'{len(df_users)} user entries have been inserted')
@@ -49,7 +52,6 @@ def populate(engine):
     try:
         df_saved_users = pd.read_csv('generated/saved_users.csv')
         df_saved_users.index += len(df_users) + 1
-        not_null_char_cols = "password,first_name,last_name,username,email,phone_number,post_code,address_line_1,address_line_2,city,county".split(",")
         df_saved_users[not_null_char_cols] = df_saved_users[not_null_char_cols].fillna("")
         df_saved_users.to_sql(name='accounts_user', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
         print(f'{len(df_saved_users)} saved user entries have been inserted')

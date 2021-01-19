@@ -14,7 +14,8 @@ task_type_num = 6
 task_statuses = ("OP", "EXP", "AS", "CL", "DN")
 person_cols = ["first_name", "last_name", "uid", "email", "password", "date_of_birth",
                "phone_number", "post_code", "date_joined", "is_active", "is_staff",
-               "is_superuser", "is_volunteer", "dbs"]
+               "is_superuser", "is_volunteer", "dbs", "username", "city", "county",
+               "address_line_1", "address_line_2"]
 task_cols = ["task_type_id", "description", "requestee_id", "volunteer_id", "status",
             "start_time", "end_time", "min_duration", "dbs_required"]
 
@@ -51,13 +52,14 @@ def generate_persons(is_volunteer=True, n=100):
         is_staff = False
         date_joined = datetime.now()
         is_active = True
+        username = email
+        # TODO generate address
+        city, county, address_line_1, address_line_2 = '','','',''
+        dbs = random.randrange(2) if is_volunteer else False
+
         person = [name, surname, uid, email, password, dob, phone_number, post_code,
-                  date_joined, is_active, is_staff, is_superuser, is_volunteer]
-        if is_volunteer:
-            dbs = random.randrange(2)
-            person.append(bool(dbs))
-        else:
-            person.append(False)
+                  date_joined, is_active, is_staff, is_superuser, is_volunteer, dbs,
+                  username, city, county, address_line_1, address_line_2]
         res.append(person)
     return res
 
