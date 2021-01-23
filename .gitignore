@@ -3,3 +3,4 @@ generated/saved_users.csv
 db.sqlite3
 .idea
 __pycache__
+connection_settings.py
