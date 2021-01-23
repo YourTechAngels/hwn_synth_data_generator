@@ -32,8 +32,8 @@ def clear_tables(engine):
 
 def populate(engine):
     df_task_types = pd.read_csv('generated/task_types.csv')
-    df_task_types.index += 1
-    df_task_types.to_sql(name='tasks_tasktype', con=engine, index=True, index_label="id",  if_exists='append', method='multi')
+    # df_task_types.index += 1
+    df_task_types.to_sql(name='tasks_tasktype', con=engine, index=False,  if_exists='append', method='multi')
     print(f'{len(df_task_types)} task_type entries have been inserted')
 
     df_tasks = pd.read_csv('generated/tasks.csv')

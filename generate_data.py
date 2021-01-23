@@ -12,6 +12,7 @@ base_n = 20
 user_count = 0
 task_type_num = 6
 task_statuses = ("OP", "EXP", "AS", "CL", "DN")
+task_types = ("GRO", "PHA", "DOG", "HOS", "CHAT", "ANY")
 person_cols = ["first_name", "last_name", "uid", "email", "password", "date_of_birth",
                "phone_number", "post_code", "date_joined", "is_active", "is_staff",
                "is_superuser", "is_volunteer", "dbs", "username", "city", "county",
@@ -80,7 +81,7 @@ def generate_tasks(n=300):
     for _ in range(n):
         dbs_required = False  # TODO hardcoded for now
         min_duration = 0    # TODO hardcoded for now
-        task_type_id = random.randrange(1, task_type_num + 1)
+        task_type_id = random.choice(task_types)
         description = gen.sentence()
         requestee_id = random.randrange(vol_count + 1, user_count + 1)
         volunteer_id = pd.NA
