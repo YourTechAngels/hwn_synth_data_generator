@@ -2,5 +2,9 @@ venv
 generated/saved_users.csv
 db.sqlite3
 .idea
+db_params.json
+
+# cache and optimized files
 __pycache__
-connection_settings.py
+*.py[co]
+*~

@@ -1,9 +1,9 @@
+import json
 import sys
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.automap import automap_base
 import pandas as pd
-from connection_settings import *
 
 
 def clear_tables(engine):
@@ -61,28 +61,32 @@ def populate(engine):
 
 
 if __name__ == "__main__":
+    # tables in a db will be cleared before data insertion
     to_clear_db = True
-    eng_conf, db_path = '', ''
+    connect_string = ''
+    db_settings_file = "db_params.json"
+    db_config_name = "aws_mysql"
 
     # parse arguments
     if len(sys.argv) > 1:
         args_to_parse = sys.argv[1:]
-        # -d option specify that db is not empty and thus all data should be
-        # deleted before inserting new data
-        if "-d" in args_to_parse:
-            args_to_parse.remove("-d")
-            to_clear_db = True
-        # instruction to populate remote db instance
-        if '--aws' in args_to_parse:
-            db_params = db_params_aws_mysql
-            eng_conf = f"{db_params['dialect']}://{db_params['user']}:"\
-                       f"{db_params['password']}@{db_params['host']}/{db_params['database']}"
-        # path to local sqlite db file
-        elif args_to_parse:
-            db_path = args_to_parse[0]
+        # instruction to use local sqlite file
+        if '-l' in args_to_parse:
+            args_to_parse.remove('-l')
+            db_path = args_to_parse[0] if args_to_parse else 'db.sqlite3'
+            connect_string = r'sqlite:///' + db_path
+        # else populate any other db according to settings
+        else:
+            db_config_name = args_to_parse[0]
 
-    eng_conf = eng_conf or (r'sqlite:///' + (db_path or 'db.sqlite3'))
-    engine = create_engine(eng_conf)
+    if not connect_string:
+        with open(db_settings_file) as param_file:
+            db_params = json.load(param_file)[db_config_name]
+        connect_string = f"{db_params['dialect']}://{db_params['user']}:"\
+                f"{db_params['password']}@{db_params['host']}/{db_params['database']}"
+
+    engine = create_engine(connect_string)
     if to_clear_db:
         clear_tables(engine)
+
     sys.exit(populate(engine))

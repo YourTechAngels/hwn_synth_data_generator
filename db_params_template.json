@@ -1,0 +1,10 @@
+{
+ "your_name": {
+  "dialect": "mysql+pymysql",
+  "host": "string",
+  "port": 3306,
+  "database": "string",
+  "user": "string",
+  "password": "string"
+ }
+}
