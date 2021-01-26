@@ -20,7 +20,8 @@ def clear_tables(engine):
     print("Number of records in Task table: ", session.query(Task).count())
     print("Number of records in TaskType table: ", session.query(TaskType).count())
     print("---------------------------------")
-    # print(session.query(User).all())
+    print("Deleting data....")
+    print(session.query(User).all())
     session.query(Task).delete()
     session.query(TaskType).delete()
     session.query(User).delete()
@@ -32,6 +33,7 @@ def clear_tables(engine):
 
 
 def populate(engine):
+    print("Inserting data....")
     df_task_types = pd.read_csv('generated/task_types.csv')
     # df_task_types.index += 1
     df_task_types.to_sql(name='tasks_tasktype', con=engine, index=False,  if_exists='append', method='multi')

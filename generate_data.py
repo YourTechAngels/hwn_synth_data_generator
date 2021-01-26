@@ -11,7 +11,7 @@ res_dir = "generated/"
 base_n = 20
 user_count = 0
 task_type_num = 6
-task_statuses = ("OP", "EXP", "AS", "CL", "DN")
+task_statuses = ("OP", "AS", "CL", "DN")
 task_types = ("GRO", "PHA", "DOG", "HOS", "CHAT", "ANY")
 person_cols = ["first_name", "last_name", "uid", "email", "password", "date_of_birth",
                "phone_number", "post_code", "date_joined", "is_active", "is_staff",
@@ -65,15 +65,25 @@ def generate_persons(is_volunteer=True, n=100):
     return res
 
 
-def gen_random_time(start, end):
-    return start + timedelta(hours=random.randint(1, (end - start).total_seconds() // 3600))
+def ceil_date(dt, delta):
+    return dt + (datetime.min - dt) % delta
 
 
-def gen_random_period(rel_start_hours, rel_end_hours):
+def gen_random_period(rel_start_hours, rel_end_hours, max_duration_hours=100):
+    '''generates random time period for tasks
+    rel_start_hours, rel_end_hours define period when a task starts relatively to now()
+    * rel_start_hours - number of hours before now,
+    * rel_end_hours - number of hours after now
+    * max_duration_hours - maximum task duration in hours'''
     now = datetime.now()
+    # calculate absolute period
     start, end = now + timedelta(hours=rel_start_hours), now + timedelta(hours=rel_end_hours)
-    t1, t2 = gen_random_time(start, end), gen_random_time(start, end)
-    return min((t1, t2)), max((t1, t2))
+    # generate random start time
+    rnd_start = start + timedelta(minutes=random.randint(1, (end - start).total_seconds() // 60))
+    # round up to minutes devided by 10
+    rnd_start = ceil_date(rnd_start, timedelta(minutes=10))
+    rnd_duration = timedelta(minutes=random.randrange(3, max_duration_hours * 6) * 10)
+    return rnd_start, rnd_start + rnd_duration
 
 
 def generate_tasks(n=300):
@@ -88,10 +98,8 @@ def generate_tasks(n=300):
         status = random.choice(task_statuses)
         if status in ["AS", "DN"]:
             volunteer_id = random.randrange(1, vol_count + 1)
-        if status == "EXP":
-            start_time, end_time = gen_random_period(-300, 0)
-        elif status in ["AS", "OP"]:
-            start_time, end_time = gen_random_period(-100, 500)
+        if status in ["AS", "OP"]:
+            start_time, end_time = gen_random_period(-500, 500)
         elif status == "DN":
             start_time, end_time = gen_random_period(-500, 100)
         elif status == "CL":
