@@ -21,7 +21,6 @@ def clear_tables(engine):
     print("Number of records in TaskType table: ", session.query(TaskType).count())
     print("---------------------------------")
     print("Deleting data....")
-    print(session.query(User).all())
     session.query(Task).delete()
     session.query(TaskType).delete()
     session.query(User).delete()
@@ -67,7 +66,7 @@ if __name__ == "__main__":
     to_clear_db = True
     connect_string = ''
     db_settings_file = "db_params.json"
-    db_config_name = "aws_mysql"
+    db_config_name = "geo_hwn"
 
     # parse arguments
     if len(sys.argv) > 1:

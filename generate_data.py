@@ -4,6 +4,7 @@ from datetime import timedelta, datetime, date
 from string import ascii_letters
 from essential_generators import DocumentGenerator
 from faker import Faker
+from datetime import timedelta
 
 source_dir = "source/"
 res_dir = "generated/"
@@ -16,7 +17,7 @@ task_types = ("GRO", "PHA", "DOG", "HOS", "CHAT", "ANY")
 person_cols = ["first_name", "last_name", "uid", "email", "password", "date_of_birth",
                "phone_number", "post_code", "date_joined", "is_active", "is_staff",
                "is_superuser", "is_volunteer", "dbs", "username", "city", "county",
-               "address_line_1", "address_line_2"]
+               "address_line_1", "address_line_2", "location"]
 task_cols = ["task_type_id", "description", "requestee_id", "volunteer_id", "status",
             "start_time", "end_time", "min_duration", "dbs_required"]
 
@@ -57,10 +58,11 @@ def generate_persons(is_volunteer=True, n=100):
         # TODO generate address
         city, county, address_line_1, address_line_2 = '','','',''
         dbs = random.randrange(2) if is_volunteer else False
-
+        # TODO hardcoded
+        location = 'POINT(-118.4079 33.9434)'
         person = [name, surname, uid, email, password, dob, phone_number, post_code,
                   date_joined, is_active, is_staff, is_superuser, is_volunteer, dbs,
-                  username, city, county, address_line_1, address_line_2]
+                  username, city, county, address_line_1, address_line_2, location]
         res.append(person)
     return res
 
@@ -90,7 +92,7 @@ def generate_tasks(n=300):
     res = []
     for _ in range(n):
         dbs_required = False  # TODO hardcoded for now
-        min_duration = 0    # TODO hardcoded for now
+        min_duration = timedelta(minutes=30)    # TODO hardcoded for now
         task_type_id = random.choice(task_types)
         description = gen.sentence()
         requestee_id = random.randrange(vol_count + 1, user_count + 1)
